@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- JPA는 persistence.xml을 사용해서 필요한 설정정보를 관리. 현재 경로에 있으면 별도 설정없이 JPA가 인식할 수 있음.-->
+
+<!--xml 네임스페이스와 사용할 버전을 지정.-->
 <persistence version="2.2"
              xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+    <!-- persistence-unit : 영속성 유닛. 연결할 데이터베이스 당 하나의 영속성 유닛을 등록.  -->
     <persistence-unit name="hello">
         <properties>
             <!-- 필수 속성 -->
@@ -9,7 +14,7 @@
             <property name="javax.persistence.jdbc.user" value="sa"/>
             <property name="javax.persistence.jdbc.password" value=""/>
             <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/test"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>   <!-- 데이터베이스 방언 설정. -->
             <!-- 옵션 -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
