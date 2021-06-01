@@ -13,7 +13,7 @@ public class JpaMain {
         // EntityManagerFactory : 하나만 생성해서 어플리케이션 전체에서 공유
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
 
-        // 스레드간에 공유 X (사용하고 버려야함)
+        // 스레드간에 공유 X (사용하고 버려야함), 보통 하나의 트랜잭션에서 하나 사용됨.
         EntityManager em = emf.createEntityManager();
 
         // EntityTransaction : JPA의 모든 데이터 변경은 트랜잭션 안에서 실행됨.
@@ -21,35 +21,30 @@ public class JpaMain {
         tx.begin();
 
         try {
-            // Member 저장
+            // 비영속 상태, 객체를 생성한 상태
             Member member = new Member();
-            member.setId(1);
+            member.setId(2);
             member.setName("doyeon");
+
+            // 영속 상태 : EntityManager를 통해 관리되며, 객체를 저장한 상태, 캐시에 저장됨.
             em.persist(member);
 
-            // 조회, 조회할 엔티티 타입과 @Id로 데이터베이스 테이블의 기본키와 매핑한 식별자 값으로 엔티티 조회.
-            Member findMember = em.find(Member.class, 1L);
-            System.out.println(findMember.getId() + ", " + findMember.getName());
+            // 준영속 상태, 영속성 컨텍스트에서 분리
+            em.detach(member);
 
-            // 수정, JPA는 어떤 엔티팉가 변경되었는지 추적하는 기능을 갖추고 있어서,
-            // 엔티티의 값만 변경되면 다음과 같은 update sql을 생성해서 데이터베이스에서 값을 변경.
-            findMember.setName("hello jpa");
+            // 엔티티를 영속성 컨텍스트와 데이터베이스에서 삭제
+            em.remove(member);
 
-            // 삭제
-            em.remove(findMember);
 
-            // JPA는 SQL을 추상화한 JPQL 이라는 객체지향 쿼리 언어 제공
-            // JPQL 은 엔티티 객체를 대상으로 쿼리, SQL은 데이터베이스 테이블을 대상으로 쿼리
-            // 방언을 바꾸거나 해도 JPQL을 변경할 필요 없음.
-            // Paging 처리하는데 좋음.
-            List<Member> result = em.createQuery("select m from Member as m", Member.class).getResultList();
+            // 동일한거 두번 조회되면, 첫번째 쿼리만 실행됨.
+            // 1차 캐시에 저장됨.
+            Member findMember = em.find(Member.class, 2);
+            Member findMember2 = em.find(Member.class, 2);
 
-            List<Member> result2 = em.createQuery("select m from Member as m", Member.class)
-                    .setFirstResult(5)
-                    .setMaxResults(8)
-                    .getResultList();
+            // 1차 캐시로 반복가능한 읽기 등급의 트랜잭션 격리 수준을 데이터베이스가 아닌 애플리케이션 차원에서 제공.
+            System.out.println(findMember == findMember2);  // 동일성 비교. true
 
-            tx.commit();
+            tx.commit();    // 커밋하는 순간 쿼리 실행됨(쿼리들이 쓰기지연 SQL 저장소에 저장되어있다가 한번에 커밋시점에 한번에 실행됨)
         } catch (Exception e) {
             tx.rollback();
         } finally {
