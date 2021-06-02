@@ -1,22 +1,27 @@
 package hellojpa;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Entity // 테이블과 매핑한다고 JPA에게 알려줌, 엔티티클래스라고함.
-@Table(name="MEMBER") // Table 정보를 알려줌.
+@Entity
+@Table(name="Member")
 public class Member {
 
-    @Id // 기본키에 매핑하며 식별자 필드라고 부름.
-    private long id;
-    private String name;
+    @Id
+    @GeneratedValue // 식별자 자동생성해주는 annotation으로 기본생성 전략은 AUTO, 선택한 방언에 따라 IDENTIFY, SEQUENCE, TABLE  중 하나 선택
+    @Column(name = "MEMBER_ID")
+    private Long id;
 
-    public long getId() {
+    private String name;
+    private String city;
+    private String street;
+    private String zipCode;
+
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -26,5 +31,29 @@ public class Member {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 }
