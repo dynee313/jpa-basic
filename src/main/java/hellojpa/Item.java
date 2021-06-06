@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)       // 단일테이블 전략
+@DiscriminatorColumn(name = "DTYPE")                        // 단이렡이블 전략은 구분 컬럼을 필수로 사용해야됨.
 public class Item {
 
     @Id

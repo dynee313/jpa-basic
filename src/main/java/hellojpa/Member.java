@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name="Member")
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue // 식별자 자동생성해주는 annotation으로 기본생성 전략은 AUTO, 선택한 방언에 따라 IDENTIFY, SEQUENCE, TABLE  중 하나 선택
